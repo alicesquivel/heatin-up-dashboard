@@ -4,6 +4,6 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: '/heatin-up-dashboard/', // keep this for GitHub Pages
+  base: '/heatin-up-dashboard/',
 })
 
