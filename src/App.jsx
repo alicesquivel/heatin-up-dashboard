@@ -1,4 +1,3 @@
-cat > (src / App.jsx) << "EOF";
 import { useMemo, useState } from "react";
 
 /* Simple inline icons (no external packages) */
@@ -264,4 +263,3 @@ function MiniChart({ series }) {
     </div>
   );
 }
-EOF;
