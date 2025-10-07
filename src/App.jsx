@@ -1,5 +1,37 @@
+cat > (src / App.jsx) << "EOF";
 import { useMemo, useState } from "react";
-import { Gauge, Droplets, Wind, RefreshCw, AlertTriangle } from "lucide-react";
+
+/* Simple inline icons (no external packages) */
+const IconGauge = (p) => (
+  <svg viewBox="0 0 24 24" width="20" height="20" {...p}>
+    <path fill="currentColor" d="M12 3a9 9 0 1 0 9 9h-2a7 7 0 1 1-7-7V3z" />
+    <path fill="currentColor" d="M13 13.5 17 8l2 2-4.5 3.5z" />
+  </svg>
+);
+const IconDrop = (p) => (
+  <svg viewBox="0 0 24 24" width="20" height="20" {...p}>
+    <path
+      fill="currentColor"
+      d="M12 2s5 6 5 10a5 5 0 1 1-10 0c0-4 5-10 5-10z"
+    />
+  </svg>
+);
+const IconWind = (p) => (
+  <svg viewBox="0 0 24 24" width="20" height="20" {...p}>
+    <path
+      fill="currentColor"
+      d="M3 8h11a2 2 0 1 0-2-2h-2a4 4 0 1 1 4 4H3zm0 8h14a2 2 0 1 0-2-2h-2a4 4 0 1 1 4 4H3z"
+    />
+  </svg>
+);
+const IconAlert = (p) => (
+  <svg viewBox="0 0 24 24" width="20" height="20" {...p}>
+    <path
+      fill="currentColor"
+      d="M1 21h22L12 2 1 21zm12-3h-2v2h2v-2zm0-8h-2v6h2V10z"
+    />
+  </svg>
+);
 
 const FIELDS = [
   { id: "field-a", name: "Field A - Stadium" },
@@ -7,11 +39,17 @@ const FIELDS = [
   { id: "field-c", name: "Field C - Track" },
 ];
 
-const metricCard = [
-  { key: "temp", label: "Temp", icon: Gauge, value: "91.4", unit: "°F" },
-  { key: "hum", label: "Humidity", icon: Droplets, value: "61", unit: "%" },
-  { key: "wind", label: "Wind", icon: Wind, value: "3", unit: "mph" },
-  { key: "hi", label: "Heat Index", icon: Gauge, value: "103.8", unit: "°F" },
+const METRICS = [
+  { key: "temp", label: "Temp", icon: IconGauge, value: "91.4", unit: "°F" },
+  { key: "hum", label: "Humidity", icon: IconDrop, value: "61", unit: "%" },
+  { key: "wind", label: "Wind", icon: IconWind, value: "3", unit: "mph" },
+  {
+    key: "hi",
+    label: "Heat Index",
+    icon: IconGauge,
+    value: "103.8",
+    unit: "°F",
+  },
 ];
 
 export default function App() {
@@ -26,12 +64,9 @@ export default function App() {
     }));
   }, []);
 
-  function onRefresh() {
-    alert("Refreshed! (wire to data later)");
-  }
-
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800">
+      {/* Header */}
       <header className="mx-auto max-w-6xl px-4 py-5 flex items-center justify-between">
         <h1 className="text-xl font-semibold tracking-tight flex items-center gap-2">
           <span className="inline-grid place-items-center h-8 w-8 rounded-xl bg-cyan-100 text-cyan-700">
@@ -40,14 +75,26 @@ export default function App() {
           Heatin-Up – Simple Dashboard
         </h1>
         <button
-          onClick={onRefresh}
+          onClick={() => window.location.reload()}
           className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm hover:bg-white shadow-sm"
+          aria-label="Refresh"
         >
-          <RefreshCw className="h-4 w-4" />
+          <svg
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            className="text-slate-700"
+          >
+            <path
+              fill="currentColor"
+              d="M17 1v6h-2V5.08A7 7 0 1 0 19 12h2a9 9 0 1 1-3.38-7H17z"
+            />
+          </svg>
           Refresh
         </button>
       </header>
 
+      {/* Alert strip */}
       <div className="w-full bg-rose-100/70 border-y border-rose-200">
         <div className="mx-auto max-w-6xl px-4 py-3 text-sm">
           <span className="inline-block bg-rose-200 text-rose-900 px-3 py-1 rounded-full font-medium mr-3">
@@ -62,10 +109,11 @@ export default function App() {
         </div>
       </div>
 
+      {/* Guidance */}
       <section className="mx-auto max-w-6xl px-4 py-4">
         <div className="rounded-2xl border border-rose-200 bg-rose-50/60 p-4">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-rose-600 mt-0.5" />
+            <IconAlert className="text-rose-600 mt-0.5" />
             <div>
               <h2 className="font-semibold text-slate-900">
                 Extreme Caution – Practical Guidance
@@ -80,6 +128,7 @@ export default function App() {
         </div>
       </section>
 
+      {/* Tabs */}
       <nav className="mx-auto max-w-6xl px-4">
         <div className="flex gap-3">
           {FIELDS.map((f) => (
@@ -99,14 +148,15 @@ export default function App() {
         </div>
       </nav>
 
+      {/* Metric cards */}
       <section className="mx-auto max-w-6xl px-4 mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {metricCard.map((m) => (
+        {METRICS.map((m) => (
           <div
             key={m.key}
             className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
           >
             <div className="flex items-center gap-3 text-slate-600">
-              <m.icon className="h-5 w-5" />
+              <m.icon />
               <span className="text-sm">{m.label}</span>
             </div>
             <div className="mt-2 text-2xl font-semibold tracking-tight">
@@ -116,6 +166,7 @@ export default function App() {
         ))}
       </section>
 
+      {/* Chart */}
       <section className="mx-auto max-w-6xl px-4 mt-6 pb-8">
         <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="text-sm text-slate-600 mb-2">
@@ -213,3 +264,4 @@ function MiniChart({ series }) {
     </div>
   );
 }
+EOF;
